@@ -88,6 +88,7 @@ public class CandidateDao {
           list.add(id);
       }
       return list;
+      
     }
     public static CandidateDetails getCandidateDetails(String cid)throws Exception{
       ps5.setString(1, cid);
