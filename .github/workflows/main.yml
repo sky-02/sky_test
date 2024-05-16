@@ -19,16 +19,11 @@ jobs:
       - name: Pull Docker image
         run: docker pull skyparmar/custom_images:latest
 
-      - name: Ensure Docker CLI is updated
+      - name: Scan Docker image for vulnerabilities using Clair
         run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          sudo apt-get update
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          CONTAINER_ID=$(docker run -d skyparmar/custom_images:latest)
+          docker exec "$CONTAINER_ID" /bin/bash -c "apt-get update && apt-get install -y curl && curl -sfL https://raw.githubusercontent.com/arminc/clair-scanner/master/get.sh | sh -s -- --ip $(hostname -I | awk '{print $1}') skyparmar/custom_images:latest"
+          docker stop "$CONTAINER_ID"
 
-      - name: Scan Docker image for vulnerabilities
-        run: docker scan skyparmar/custom_images:latest
         
 
