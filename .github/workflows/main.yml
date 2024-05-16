@@ -19,8 +19,8 @@ jobs:
       - name: Pull Docker image
         run: docker pull skyparmar/custom_images:latest
 
-      - name: Remove the existing containers 
-        run: docker rm $(docker ps -a -q)
+      - name: check the container running 
+        run: docker ps 
 
       - name: Run Docker container
         run: docker run -p 8080:80 skyparmar/custom_images:latest
