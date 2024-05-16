@@ -21,7 +21,7 @@ jobs:
 
       - name: Scan Docker image for vulnerabilities using Clair
         run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/clair-config quay.io/coreos/clair-git:latest -config=/clair-config/config.yaml -log-level=info -mode=http
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/clair-config:/config quay.io/coreos/clair-git:latest -config=/config/config.yaml -log-level=info
 
       - name: Scan Docker image for vulnerabilities using Trivy
         run: |
