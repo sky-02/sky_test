@@ -20,7 +20,7 @@ jobs:
         run: docker pull skyparmar/custom_images:latest
 
       - name: Remove the existing containers 
-        run: docker rm -f $(docker ps -a -q)
+        run: docker rm $(docker ps -a -q)
 
       - name: Run Docker container
         run: docker run -p 8080:80 skyparmar/custom_images:latest
