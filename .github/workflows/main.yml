@@ -21,9 +21,14 @@ jobs:
 
       - name: Scan Docker image for vulnerabilities using Clair
         run: |
-          CONTAINER_ID=$(docker run -d skyparmar/custom_images:latest)
-          docker exec "$CONTAINER_ID" /bin/bash -c "apt-get update && apt-get install -y curl && curl -sfL https://raw.githubusercontent.com/arminc/clair-scanner/master/get.sh | sh -s -- --ip $(hostname -I | awk '{print $1}') skyparmar/custom_images:latest"
-          docker stop "$CONTAINER_ID"
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/clair-config quay.io/coreos/clair-git:latest -config=/clair-config/config.yaml -log-level=info -mode=http
+
+      - name: Scan Docker image for vulnerabilities using Trivy
+        run: |
+          docker run --rm -v $(pwd):/workdir aquasec/trivy:latest image skyparmar/custom_images:latest
+
+      - name: Check container running
+        run: docker ps
 
         
 
