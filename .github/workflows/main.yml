@@ -22,3 +22,13 @@ jobs:
       - name: check the container running 
         run: docker ps 
 
+
+      - name: Run Docker container
+        run: docker run -d -p 8080:80 skyparmar/custom_images:latest
+
+      - name: Test running application
+        run: |
+          sleep 10
+          curl -I http://localhost:8080
+        
+
