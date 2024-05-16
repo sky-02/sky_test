@@ -22,5 +22,3 @@ jobs:
       - name: check the container running 
         run: docker ps 
 
-      - name: Run Docker container
-        run: docker run -p 8080:80 skyparmar/custom_images:latest
