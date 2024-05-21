@@ -1,62 +1,35 @@
 name: Pull and Push Third Pary Image 
 
 on:
-  # pull_request:
   workflow_dispatch:
     inputs:
-      CUSTOMER:
-        description: Customer name (e.g., ncoint)
+      my_var:
+        description: 'Value for MY_VAR'
         required: true
-        type: string
-      CUSTOMER_ENVIRONMENT:
-        description: Customer environment (e.g., aparmar-sandbox)
+        default: 'Hello, World!'
+      another_var:
+        description: 'Value for ANOTHER_VAR'
         required: true
-        type: string
-      AWS_REGION:
-        description: AWS region
-        required: true
-        default: eu-west-1
-        type: choice
-        options:
-          - ap-northeast-1
-          - ap-southeast-1
-          - ap-southeast-2
-          - ca-central-1
-          - eu-central-1
-          - eu-west-1
-          - eu-west-2
-          - eu-west-3
-          - us-east-1
-      IMAGE_SITE_URL:
-        description: Site URL (e.g., docker.io)
-        required: true
-        type: string
+        default: '42'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ inputs.IMAGE_SITE_URL || 'docker.io' }} -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+    - name: Set environment variables
+      run: |
+        echo "MY_VAR=${{ inputs.my_var }}" >> $GITHUB_ENV
+        echo "ANOTHER_VAR=${{ inputs.another_var }}" >> $GITHUB_ENV
 
-      - name: Pull Docker image
-        run: docker pull skyparmar/custom_images:latest
+    - name: Echo environment variables
+      run: |
+        echo "MY_VAR: $MY_VAR"
+        echo "ANOTHER_VAR: $ANOTHER_VAR"
 
-      - name: Scan Docker image for vulnerabilities using Clair
-        run: |
-          CONTAINER_ID=$(docker run -d skyparmar/custom_images:latest)
-          docker exec "$CONTAINER_ID" /bin/bash -c "apt-get update && apt-get install -y curl && curl -sfL https://raw.githubusercontent.com/arminc/clair-scanner/master/get.sh | sh -s -- --ip $(hostname -I | awk '{print $1}') skyparmar/custom_images:latest"
-
-      - name: Scan Docker image for vulnerabilities using Trivy
-        run: |
-          docker run --rm -v $(pwd):/workdir aquasec/trivy:latest image skyparmar/custom_images:latest
-
-      - name: Check container running
-        run: docker ps
-
-        
+    - name: Print all environment variables
+      run: env        
 
