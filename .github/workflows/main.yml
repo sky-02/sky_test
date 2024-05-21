@@ -58,4 +58,6 @@ jobs:
             break
           fi
         done
-
+        
+    - name: Print all environment variables
+      run: env        
