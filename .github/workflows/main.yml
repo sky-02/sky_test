@@ -29,7 +29,7 @@ jobs:
       run: |
         MY_VAR="${{ inputs.my_var }}"
         ANOTHER_VAR="${{ inputs.another_var }}"
-        NCOINT_APARMAR_SANDBOX_DOCKER_PASSWORD="${{ inputs.MY_DOCKER_PASSWORD }}
+        NCOINT_APARMAR_SANDBOX_DOCKER_PASSWORD="${{ inputs.MY_DOCKER_PASSWORD }}"
 
         # Check if MY_VAR is lowercase and convert to uppercase
         if [[ "$MY_VAR" =~ ^[a-z]+$ ]]; then
