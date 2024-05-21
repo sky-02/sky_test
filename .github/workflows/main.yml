@@ -11,6 +11,11 @@ on:
         description: 'Value for ANOTHER_VAR'
         required: true
         default: '42'
+      MY_DOCKER_PASSWORD:
+        description: 'Value for ANOTHER_VAR'
+        required: true
+        default: '4246546514'
+        
 
 jobs:
   build:
@@ -43,5 +48,13 @@ jobs:
         echo "MY_VAR: $MY_VAR"
         echo "ANOTHER_VAR: $ANOTHER_VAR"
 
-    - name: Print all environment variables
-      run: env
+    - name: Get DOCKER_PASSWORD environment variable
+      run: |
+        for VAR in $(env); do
+          if [[ $VAR == *DOCKER_PASSWORD=* ]]; then
+            DOCKER_PASSWORD=${VAR#*=}
+            echo "Found DOCKER_PASSWORD: $DOCKER_PASSWORD"
+            break
+          fi
+        done
+
