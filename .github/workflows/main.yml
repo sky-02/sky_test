@@ -1,4 +1,4 @@
-name: Pull and Push Third Pary Image 
+name: Pull and Push Third Party Image
 
 on:
   workflow_dispatch:
@@ -20,10 +20,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set environment variables
+    - name: Set and process environment variables
       run: |
-        echo "MY_VAR=${{ inputs.my_var }}" >> $GITHUB_ENV
-        echo "ANOTHER_VAR=${{ inputs.another_var }}" >> $GITHUB_ENV
+        MY_VAR="${{ inputs.my_var }}"
+        ANOTHER_VAR="${{ inputs.another_var }}"
+
+        # Check if MY_VAR is lowercase and convert to uppercase
+        if [[ "$MY_VAR" =~ ^[a-z]+$ ]]; then
+          MY_VAR=$(echo "$MY_VAR" | tr '[:lower:]' '[:upper:]')
+        fi
+
+        # Check if ANOTHER_VAR is lowercase and convert to uppercase
+        if [[ "$ANOTHER_VAR" =~ ^[a-z]+$ ]]; then
+          ANOTHER_VAR=$(echo "$ANOTHER_VAR" | tr '[:lower:]' '[:upper:]')
+        fi
+
+        echo "MY_VAR=$MY_VAR" >> $GITHUB_ENV
+        echo "ANOTHER_VAR=$ANOTHER_VAR" >> $GITHUB_ENV
 
     - name: Echo environment variables
       run: |
@@ -31,5 +44,4 @@ jobs:
         echo "ANOTHER_VAR: $ANOTHER_VAR"
 
     - name: Print all environment variables
-      run: env        
-
+      run: env
